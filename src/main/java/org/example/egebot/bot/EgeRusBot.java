@@ -60,9 +60,8 @@ public class EgeRusBot extends TelegramLongPollingBot {
     }
 
     private void sendMessage(Long chatId, String messageText) {
-        String chatIdStr = String.valueOf(chatId);
-        SendMessage message = new SendMessage(chatIdStr, messageText);
-
+        SendMessage message = Sender.sendMessage(chatId, messageText);
+        message.setReplyMarkup(Keyboards.mainCommands());
         try {
             execute(message);
         } catch (TelegramApiException e) {
