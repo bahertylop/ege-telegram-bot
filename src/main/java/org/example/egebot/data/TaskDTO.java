@@ -23,6 +23,19 @@ public class TaskDTO {
     private Integer taskNumber;
     private Integer taskType;
 
+//    public static <T extends TaskType> TaskDTO from(T taskEntity, Class<T> entityType) {
+//        TaskDTO dto = new TaskDTO();
+//        dto.setId(taskEntity.getId());
+//        dto.setText(taskEntity.getText());
+//        dto.setTask(taskEntity.getTask());
+//        dto.setAnswer(taskEntity.getAnswer());
+//        dto.setClarification(taskEntity.getClarification());
+//        dto.setTaskNumber(taskEntity.getTaskNumber());
+//        // здесь можно обработать другие поля в зависимости от типа задачи
+//
+//        return dto;
+//    }
+
     public static TaskDTO from(Task1 task) {
         return TaskDTO.builder()
                 .id(task.getId())
@@ -299,5 +312,71 @@ public class TaskDTO {
 
     public static List<Task1DTO> from(List<Task1> tasks) {
         return tasks.stream().map(Task1DTO::from).toList();
+    }
+
+    public static TaskDTO from(TaskType taskType, Class<? extends TaskType> entityType) {
+        TaskDTO dto = new TaskDTO();
+        dto.setId(taskType.getId());
+        dto.setTask(taskType.getTask());
+        dto.setTaskNumber(taskType.getTaskNumber());
+        dto.setClarification(taskType.getClarification());
+        dto.setAnswer(taskType.getAnswer());
+        dto.setTaskType(findTaskType(taskType));
+
+        if (taskType.getText() == null) {
+            dto.setText(null);
+            dto.setNeedText(false);
+        } else {
+            dto.setText(taskType.getText());
+            dto.setNeedText(true);
+        }
+
+        return dto;
+    }
+
+    public static int findTaskType(TaskType taskType) {
+        if (taskType instanceof Task1)
+            return 1;
+        else if (taskType instanceof Task2)
+            return 2;
+        else if (taskType instanceof Task3)
+            return 3;
+        else if (taskType instanceof Task4)
+            return 4;
+        else if (taskType instanceof Task5)
+            return 5;
+        else if (taskType instanceof Task6)
+            return 6;
+        else if (taskType instanceof Task7)
+            return 7;
+        else if (taskType instanceof Task8)
+            return 8;
+        else if (taskType instanceof Task9)
+            return 9;
+        else if (taskType instanceof Task10)
+            return 10;
+        else if (taskType instanceof Task11)
+            return 11;
+        else if (taskType instanceof Task12)
+            return 12;
+        else if (taskType instanceof Task13)
+            return 13;
+        else if (taskType instanceof Task14)
+            return 14;
+        else if (taskType instanceof Task15)
+            return 15;
+        else if (taskType instanceof Task16)
+            return 16;
+        else if (taskType instanceof Task17)
+            return 17;
+        else if (taskType instanceof Task18)
+            return 18;
+        else if (taskType instanceof Task19)
+            return 19;
+        else if (taskType instanceof Task20)
+            return 20;
+        else if (taskType instanceof Task21)
+            return 21;
+        else return 0;
     }
 }

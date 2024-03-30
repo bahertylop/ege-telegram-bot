@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Task1 {
+public class Task1 extends TaskType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

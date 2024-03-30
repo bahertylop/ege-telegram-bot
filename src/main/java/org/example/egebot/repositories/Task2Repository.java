@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface Task2Repository extends JpaRepository<Task2, Long> {
+public interface Task2Repository extends TaskRepository<Task2> {
 
-    @Query(value = "SELECT t FROM Task2 t ORDER BY RAND()")
-    Optional<Task2> getRandomTask();
+    @Override
+    default Class<Task2> getEntityClass() {
+        return Task2.class;
+    }
+
+//    @Query(value = "SELECT t FROM Task2 t ORDER BY RAND()")
+//    Optional<Task2> getRandomTask();
 }
