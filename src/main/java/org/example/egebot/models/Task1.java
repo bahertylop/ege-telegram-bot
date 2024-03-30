@@ -14,11 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Task1 extends TaskType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "task_id")
-    private Long id;
-
     @Column(length = 4000)
     private String text;
 
