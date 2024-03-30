@@ -1,5 +1,8 @@
 package org.example.egebot.bot;
 
+import lombok.RequiredArgsConstructor;
+import org.example.egebot.data.TaskDTO;
+import org.example.egebot.services.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +16,23 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.List;
 
 @Component
+//@RequiredArgsConstructor
 public class EgeRusBot extends TelegramLongPollingBot {
+
+    private int taskNumber = 1;
+
+    private final TaskService taskService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EgeRusBot.class);
 
     @Value("${bot.name}")
     private String botName;
 
-    public EgeRusBot(@Value("${bot.token}") String botToken) {
+
+
+    public EgeRusBot(@Value("${bot.token}") String botToken, TaskService taskService) {
         super(botToken);
+        this.taskService = taskService;
     }
 
     // поступление команд обработка
@@ -33,6 +44,11 @@ public class EgeRusBot extends TelegramLongPollingBot {
 
         if (text.equals("/start")) {
             startBot(chatId);
+        } else if (text.equals("Решать задания")) {
+            sendMessage(chatId, "Введите номер задания, котрое хотите порешать.");
+        }
+        else {
+            chooseTaskNumber(chatId, text);
         }
 
     }
@@ -67,5 +83,16 @@ public class EgeRusBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             LOGGER.error("Ошибка, при отправке сообщения: " + e.getMessage());
         }
+    }
+
+    private void chooseTaskNumber(Long chatId, String text) {
+        taskNumber = Integer.parseInt(text);
+        sendMessage(chatId, "Номер задачи выбран, " + text + ":");
+        sendTask(chatId);
+    }
+
+    private void sendTask(Long chatId) {
+        TaskDTO taskDTO = taskService.getRandomTask(taskNumber);
+        sendMessage(chatId, taskDTO.toString());
     }
 }

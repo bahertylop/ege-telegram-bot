@@ -17,6 +17,6 @@ public interface Task1Repository extends TaskRepository<Task1> {
         return Task1.class;
     }
 
-//    @Query(value = "SELECT t FROM Task1 t ORDER BY RAND()")
-//    Optional<Task1> getRandomTask();
+    @Query(value = "SELECT t FROM Task1 t ORDER BY RANDOM() LIMIT 1")
+    Optional<Task1> getRandomTask();
 }

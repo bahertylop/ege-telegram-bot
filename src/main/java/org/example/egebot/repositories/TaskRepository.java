@@ -15,6 +15,6 @@ public interface TaskRepository<T extends TaskType> extends JpaRepository<T , Lo
         return null;
     }
 
-    @Query(value = "SELECT t FROM #{#entityName} t ORDER BY RAND()")
+    @Query(value = "SELECT t FROM #{#entityName} t ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<T> getRandomTask();
 }

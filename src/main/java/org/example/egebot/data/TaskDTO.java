@@ -379,4 +379,16 @@ public class TaskDTO {
             return 21;
         else return 0;
     }
+
+    @Override
+    public String toString() {
+        if (needText) {
+            return "Задание №" + id + ";\n" +
+                    task + "\n" +
+                    "Текст: " + text + "\n";
+        } else {
+            return "Задание №" + id + ";\n" +
+                    task + "\n";
+        }
+    }
 }
