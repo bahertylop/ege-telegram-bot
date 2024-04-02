@@ -2,6 +2,7 @@ package org.example.egebot.bot;
 
 import lombok.RequiredArgsConstructor;
 import org.example.egebot.data.TaskDTO;
+import org.example.egebot.services.AccountService;
 import org.example.egebot.services.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class EgeRusBot extends TelegramLongPollingBot {
     private int taskNumber = 1;
 
     private final TaskService taskService;
+    private final AccountService accountService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EgeRusBot.class);
 
@@ -30,19 +32,21 @@ public class EgeRusBot extends TelegramLongPollingBot {
 
 
 
-    public EgeRusBot(@Value("${bot.token}") String botToken, TaskService taskService) {
+    public EgeRusBot(@Value("${bot.token}") String botToken, TaskService taskService, AccountService accountService) {
         super(botToken);
         this.taskService = taskService;
+        this.accountService = accountService;
     }
 
     // поступление команд обработка
     @Override
     public void onUpdateReceived(Update update) {
         Long chatId = update.getMessage().getChatId();
-
+        System.out.println(chatId);
         String text = update.getMessage().getText();
 
         if (text.equals("/start")) {
+            accountService.signUp(update.getMessage());
             startBot(chatId);
         } else if (text.equals("Решать задания")) {
             sendMessage(chatId, "Введите номер задания, котрое хотите порешать.");

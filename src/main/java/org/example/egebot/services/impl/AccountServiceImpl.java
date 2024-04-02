@@ -1,0 +1,47 @@
+package org.example.egebot.services.impl;
+
+
+import jakarta.persistence.PersistenceException;
+import lombok.RequiredArgsConstructor;
+import org.example.egebot.bot.EgeRusBot;
+import org.example.egebot.models.Account;
+import org.example.egebot.repositories.AccountRepository;
+import org.example.egebot.services.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.time.LocalDate;
+
+@Service
+@RequiredArgsConstructor
+public class AccountServiceImpl implements AccountService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
+
+    private final AccountRepository accountRepository;
+
+    @Override
+    public void signUp(Message message) {
+        String userName = message.getFrom().getUserName();
+        Long chatId = message.getChatId();
+
+        if (accountRepository.getAccountByChatId(chatId).isEmpty()) {
+            Account newAccount = Account.builder()
+                    .userName(userName)
+                    .chatId(chatId)
+                    .startDate(LocalDate.now())
+                    .tries(10)
+                    .subscribed(false)
+                    .build();
+
+            try {
+                accountRepository.save(newAccount);
+            } catch (PersistenceException e) {
+                LOGGER.error("error to save account with id: " + chatId + "; " + e.getMessage());
+            }
+
+        }
+    }
+}
