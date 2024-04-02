@@ -3,6 +3,7 @@ package org.example.egebot.bot;
 import lombok.RequiredArgsConstructor;
 import org.example.egebot.data.BotStateDTO;
 import org.example.egebot.data.TaskDTO;
+import org.example.egebot.models.BotState;
 import org.example.egebot.services.AccountService;
 import org.example.egebot.services.BotStateService;
 import org.example.egebot.services.TaskService;
@@ -59,9 +60,9 @@ public class EgeRusBot extends TelegramLongPollingBot {
             } else if (text.equals("Решать задания")) {
                 sendMessage(chatId, "Введите номер задания, котрое хотите порешать.", ChooseTask.getChooseTaskKeyboard());
             }
-//            else {
-//                chooseTaskNumber(chatId, text);
-//            }
+            else {
+                checkTaskAnswer(chatId, text);
+            }
         } else if (update.hasCallbackQuery()) {
             Long chatId = update.getCallbackQuery().getFrom().getId();
             System.out.println(chatId);
@@ -114,6 +115,20 @@ public class EgeRusBot extends TelegramLongPollingBot {
 
     private void sendTask(Long chatId) {
         TaskDTO taskDTO = taskService.getRandomTask(taskNumber);
+        botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
         sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands());
+    }
+
+    private void checkTaskAnswer(Long chatId, String answer) {
+        BotStateDTO stateDTO = botStateService.getBotState(chatId);
+
+        boolean result = taskService.checkAnswer(answer, stateDTO.getTaskId(), stateDTO.getTaskType());
+
+        if (result) {
+            sendMessage(chatId,"Правильно", Keyboards.taskCommands());
+            sendTask(chatId);
+        } else {
+            sendMessage(chatId, "Неправильно", Keyboards.taskCommands());
+        }
     }
 }
