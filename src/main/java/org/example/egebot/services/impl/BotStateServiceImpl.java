@@ -34,11 +34,11 @@ public class BotStateServiceImpl implements BotStateService {
 
     @Override
     public void setBotStateCommand(Long chatId) {
-
+        botStateRepository.setStateCommand(chatId);
     }
 
     @Override
     public void setBotStateAnswer(Long chatId, Integer taskType, Long taskId) {
-
+        botStateRepository.setStateAnswer(chatId, taskId, taskType);
     }
 }
