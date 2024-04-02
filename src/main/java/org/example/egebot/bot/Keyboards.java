@@ -38,13 +38,14 @@ public class Keyboards {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
 
         KeyboardRow row1 = new KeyboardRow();
-        row1.add("Назад");
+        row1.add("\uD83D\uDD19");
         row1.add("Пропустить задание");
 
         KeyboardRow row2 = new KeyboardRow();
         row2.add("Узнать ответ");
 
         keyboardRows.add(row1);
+        keyboardRows.add(row2);
 
         keyboardMarkup.setKeyboard(keyboardRows);
 
@@ -59,7 +60,8 @@ public class Keyboards {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add("Назад");
+        row.add("\uD83D\uDD19");
+        row.add("Купить подписку");
 
         keyboardRows.add(row);
 

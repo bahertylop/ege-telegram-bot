@@ -7,6 +7,7 @@ import org.example.egebot.models.*;
 import org.example.egebot.repositories.*;
 import org.example.egebot.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -70,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
             throw new RuntimeException(ExceptionConstants.TASK_NOT_FOUND);
         }
         Class<? extends TaskType> entityType = repository.getEntityClass();
-        return TaskDTO.from(repository.getRandomTask().orElseThrow(() -> new RuntimeException(ExceptionConstants.TASK_NOT_FOUND)), entityType);
+        return TaskDTO.from(repository.getRandomTask().orElseThrow(() -> new RuntimeException(ExceptionConstants.TASK_NOT_FOUND)));
     }
 
     @Override
@@ -92,5 +93,18 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    public TaskDTO getTaskByIdAndType(Long taskId, Integer taskType) {
+        TaskRepository<? extends TaskType> repository = taskRepositories.get(taskType);
+        if (repository == null) {
+            throw new RuntimeException(ExceptionConstants.TASK_NOT_FOUND);
+        }
 
+        Optional<? extends TaskType> task = repository.findById(taskId);
+        if (task.isPresent()) {
+            return TaskDTO.from(task.get());
+        } else {
+            throw new RuntimeException(ExceptionConstants.TASK_NOT_FOUND);
+        }
+    }
 }

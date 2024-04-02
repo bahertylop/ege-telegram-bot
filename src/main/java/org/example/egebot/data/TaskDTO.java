@@ -314,7 +314,7 @@ public class TaskDTO {
         return tasks.stream().map(Task1DTO::from).toList();
     }
 
-    public static TaskDTO from(TaskType taskType, Class<? extends TaskType> entityType) {
+    public static TaskDTO from(TaskType taskType) {
         TaskDTO dto = new TaskDTO();
         dto.setId(taskType.getId());
         dto.setTask(taskType.getTask());
@@ -390,5 +390,15 @@ public class TaskDTO {
             return "Задание №" + id + ";\n" +
                     task + "\n";
         }
+    }
+
+    public String showAnswer() {
+        String answer = "✅ Правильный ответ: " + this.answer + "\n";
+
+        String clarification = "";
+        if (this.clarification != null) {
+            clarification = "❔ Пояснение: " + this.clarification + "\n";
+        }
+        return answer + clarification;
     }
 }

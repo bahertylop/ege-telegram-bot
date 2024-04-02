@@ -4,6 +4,7 @@ package org.example.egebot.services.impl;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.example.egebot.bot.EgeRusBot;
+import org.example.egebot.data.AccountDTO;
 import org.example.egebot.models.Account;
 import org.example.egebot.repositories.AccountRepository;
 import org.example.egebot.services.AccountService;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +45,14 @@ public class AccountServiceImpl implements AccountService {
             }
 
         }
+    }
+
+
+    // разобраться с null
+    @Override
+    public AccountDTO getAccount(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        return account.map(AccountDTO::from).orElse(null);
     }
 }

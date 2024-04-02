@@ -1,8 +1,10 @@
 package org.example.egebot.bot;
 
 import lombok.RequiredArgsConstructor;
+import org.example.egebot.data.AccountDTO;
 import org.example.egebot.data.BotStateDTO;
 import org.example.egebot.data.TaskDTO;
+import org.example.egebot.enums.Enums;
 import org.example.egebot.models.BotState;
 import org.example.egebot.services.AccountService;
 import org.example.egebot.services.BotStateService;
@@ -16,9 +18,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 //@RequiredArgsConstructor
@@ -58,10 +62,23 @@ public class EgeRusBot extends TelegramLongPollingBot {
                 accountService.signUp(update.getMessage());
                 startBot(chatId);
             } else if (text.equals("Решать задания")) {
-                sendMessage(chatId, "Введите номер задания, котрое хотите порешать.", ChooseTask.getChooseTaskKeyboard());
+                sendMessage(chatId, "Выберите номер задания, которое хотите порешать.\uD83D\uDC47", ChooseTask.getChooseTaskKeyboard());
+            } else if (text.equals("Пропустить задание")) {
+                sendTask(chatId);
+            } else if (text.equals("\uD83D\uDD19")) {
+                botStateService.setBotStateCommand(chatId);
+                sendMessage(chatId, "Выберите нужный пункт меню", Keyboards.mainCommands());
+            } else if (botState.getState().equals(Enums.State.ANSWER)) {
+                if (text.equals("Узнать ответ")) {
+                    sendAnswer(chatId);
+                } else {
+                    checkTaskAnswer(chatId, text);
+                }
+            } else if (text.equals("Профиль")) {
+                profileMessage(chatId);
             }
             else {
-                checkTaskAnswer(chatId, text);
+                sendMessage(chatId, "Неизвестная команда, воспользуйтесь меню)", Keyboards.mainCommands());
             }
         } else if (update.hasCallbackQuery()) {
             Long chatId = update.getCallbackQuery().getFrom().getId();
@@ -125,10 +142,26 @@ public class EgeRusBot extends TelegramLongPollingBot {
         boolean result = taskService.checkAnswer(answer, stateDTO.getTaskId(), stateDTO.getTaskType());
 
         if (result) {
-            sendMessage(chatId,"Правильно", Keyboards.taskCommands());
+            sendMessage(chatId,"Правильно ✅", Keyboards.taskCommands());
             sendTask(chatId);
         } else {
-            sendMessage(chatId, "Неправильно", Keyboards.taskCommands());
+            sendMessage(chatId, "Неправильно ❌", Keyboards.taskCommands());
+        }
+    }
+
+    private void sendAnswer(Long chatId) {
+        BotStateDTO stateDTO = botStateService.getBotState(chatId);
+
+        TaskDTO taskDTO = taskService.getTaskByIdAndType(stateDTO.getTaskId(), stateDTO.getTaskType());
+        sendMessage(chatId, taskDTO.showAnswer(), Keyboards.taskCommands());
+        sendTask(chatId);
+    }
+
+    private void profileMessage(Long chatId) {
+        AccountDTO accountDTO = accountService.getAccount(chatId);
+
+        if (accountDTO != null) {
+            sendMessage(chatId, accountDTO.toString(), Keyboards.profileCommands());
         }
     }
 }
