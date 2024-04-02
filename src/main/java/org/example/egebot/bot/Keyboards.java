@@ -37,11 +37,14 @@ public class Keyboards {
 
         List<KeyboardRow> keyboardRows = new ArrayList<>();
 
-        KeyboardRow row = new KeyboardRow();
-        row.add("Назад");
-        row.add("Пропустить задание");
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add("Назад");
+        row1.add("Пропустить задание");
 
-        keyboardRows.add(row);
+        KeyboardRow row2 = new KeyboardRow();
+        row2.add("Узнать ответ");
+
+        keyboardRows.add(row1);
 
         keyboardMarkup.setKeyboard(keyboardRows);
 

@@ -17,6 +17,6 @@ public interface Task12Repository extends TaskRepository<Task12> {
     default Class<Task12> getEntityClass() {
         return Task12.class;
     }
-//    @Query(value = "SELECT t FROM Task12 t ORDER BY RAND()")
-//    Optional<Task12> getRandomTask();
+    @Query(value = "SELECT t FROM Task12 t ORDER BY RANDOM() LIMIT 1")
+    Optional<Task12> getRandomTask();
 }
