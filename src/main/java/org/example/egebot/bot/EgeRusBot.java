@@ -28,7 +28,7 @@ import java.util.Optional;
 //@RequiredArgsConstructor
 public class EgeRusBot extends TelegramLongPollingBot {
 
-    private int taskNumber = 1;
+//    private int taskNumber = 1;
 
     private final TaskService taskService;
     private final AccountService accountService;
@@ -125,13 +125,15 @@ public class EgeRusBot extends TelegramLongPollingBot {
     }
 
     private void chooseTaskNumber(Long chatId, String text) {
-        taskNumber = Integer.parseInt(text);
+        int taskType = Integer.parseInt(text);
+        botStateService.setTaskType(taskType, chatId);
         sendMessage(chatId, "Номер задачи выбран, " + text + ":", Keyboards.mainCommands());
         sendTask(chatId);
     }
 
     private void sendTask(Long chatId) {
-        TaskDTO taskDTO = taskService.getRandomTask(taskNumber);
+        Integer taskType = botStateService.getTaskType(chatId);
+        TaskDTO taskDTO = taskService.getRandomTask(taskType);
         botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
         sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands());
     }

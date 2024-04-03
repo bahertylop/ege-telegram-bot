@@ -11,9 +11,17 @@ public class TaskType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Long id;
+
+    @Column(length = 4000)
     private String text;
+
+    @Column(length = 2000)
     private String task;
+
     private String answer;
+
+    @Column(length = 2000)
     private String clarification;
+
     private Integer taskNumber;
 }

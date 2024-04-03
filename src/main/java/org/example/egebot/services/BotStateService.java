@@ -10,4 +10,8 @@ public interface BotStateService {
     void setBotStateCommand(Long chatId);
 
     void setBotStateAnswer(Long chatId, Integer taskType, Long taskId);
+
+    void setTaskType(Integer taskType, Long chatId);
+
+    Integer getTaskType(Long chatId);
 }
