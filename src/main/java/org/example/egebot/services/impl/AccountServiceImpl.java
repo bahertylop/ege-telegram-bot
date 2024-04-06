@@ -55,4 +55,30 @@ public class AccountServiceImpl implements AccountService {
 
         return account.map(AccountDTO::from).orElse(null);
     }
+
+    @Override
+    public boolean canSendTask(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        if (account.isPresent()) {
+            Account accountReal = account.get();
+
+            if (accountReal.isSubscribed()) {
+                LocalDate now = LocalDate.now();
+                LocalDate end = accountReal.getEndSubscribe();
+                if (end != null) {
+                    return now.isBefore(end);
+                }
+            } else {
+                int tries = accountReal.getTries();
+                if (tries > 0) {
+                    accountReal.setTries(tries - 1);
+                    accountRepository.save(accountReal);
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
 }

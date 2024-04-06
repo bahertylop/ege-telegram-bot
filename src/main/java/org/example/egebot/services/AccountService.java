@@ -9,4 +9,6 @@ public interface AccountService {
     void signUp(Message message);
 
     AccountDTO getAccount(Long chatId);
+
+    boolean canSendTask(Long chatId);
 }

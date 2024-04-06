@@ -68,6 +68,8 @@ public class EgeRusBot extends TelegramLongPollingBot {
             } else if (text.equals("\uD83D\uDD19")) {
                 botStateService.setBotStateCommand(chatId);
                 sendMessage(chatId, "Выберите нужный пункт меню", Keyboards.mainCommands());
+            } else if (text.equals("Купить подписку")) {
+                sendMessage(chatId, "Купить подписку переведите сотку по номеру 89083006654 и пришлите чек", Keyboards.profileCommands());
             } else if (botState.getState().equals(Enums.State.ANSWER)) {
                 if (text.equals("Узнать ответ")) {
                     sendAnswer(chatId);
@@ -132,10 +134,14 @@ public class EgeRusBot extends TelegramLongPollingBot {
     }
 
     private void sendTask(Long chatId) {
-        Integer taskType = botStateService.getTaskType(chatId);
-        TaskDTO taskDTO = taskService.getRandomTask(taskType);
-        botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
-        sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands());
+        if (accountService.canSendTask(chatId)) {
+            Integer taskType = botStateService.getTaskType(chatId);
+            TaskDTO taskDTO = taskService.getRandomTask(taskType);
+            botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
+            sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands());
+        } else {
+            sendMessage(chatId, "Для продолжения пользования ботом, купите подписку", Keyboards.profileCommands());
+        }
     }
 
     private void checkTaskAnswer(Long chatId, String answer) {
