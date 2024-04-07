@@ -99,7 +99,7 @@ public class Sender {
         String chatId = String.valueOf(6380769033L);
 
         SendMessage messageToAdmin = new SendMessage();
-        messageToAdmin.setText(message.getChatId().toString());
+        messageToAdmin.setText(message.getChatId().toString() + " " + message.getFrom().getUserName());
         messageToAdmin.setChatId(chatId);
         sendMessage(messageToAdmin, bot);
 

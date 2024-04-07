@@ -63,6 +63,7 @@ public class UpdateHandler {
                 sender.sendConfirmMessageToAdmin(message, bot);
             }
             botStateService.setBotStateCommand(chatId);
+            sender.sendMessage(chatId, MessagesConstants.afterBuying, Keyboards.mainCommands(), bot);
         }
 
     }
