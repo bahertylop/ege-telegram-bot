@@ -14,4 +14,8 @@ public interface BotStateService {
     void setTaskType(Integer taskType, Long chatId);
 
     Integer getTaskType(Long chatId);
+
+    void setBotStateBuying(Long chatId);
+
+    boolean checkBotStateBuying(Long chatId);
 }

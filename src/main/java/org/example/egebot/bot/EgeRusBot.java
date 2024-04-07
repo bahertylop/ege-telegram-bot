@@ -62,4 +62,5 @@ public class EgeRusBot extends TelegramLongPollingBot {
     public void onRegister() {
         super.onRegister();
     }
+
 }

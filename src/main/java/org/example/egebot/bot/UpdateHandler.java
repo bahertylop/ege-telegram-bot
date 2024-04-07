@@ -26,30 +26,39 @@ public class UpdateHandler {
         String text = message.getText();
         BotStateDTO botState = botStateService.getBotState(chatId);
 
-        if (text.equals("/start")) {
-            accountService.signUp(message);
-            sender.startBot(chatId, bot);
-        } else if (text.equals("Решать задания")) {
-            sender.sendMessage(chatId, "Выберите номер задания, которое хотите порешать.\uD83D\uDC47", ChooseTask.getChooseTaskKeyboard(), bot);
-        } else if (text.equals("Пропустить задание")) {
-            sender.sendTask(chatId, bot);
-        } else if (text.equals("\uD83D\uDD19")) {
-            botStateService.setBotStateCommand(chatId);
-            sender.sendMessage(chatId, "Выберите нужный пункт меню", Keyboards.mainCommands(), bot);
-        } else if (text.equals("Купить подписку")) {
-            sender.sendMessage(chatId, "Купить подписку переведите сотку по номеру 89083006654 и пришлите чек", Keyboards.profileCommands(), bot);
-        } else if (botState.getState().equals(Enums.State.ANSWER)) {
-            if (text.equals("Узнать ответ")) {
-                sender.sendAnswer(chatId, bot);
-            } else {
-                sender.checkTaskAnswer(chatId, text, bot);
+        if (message.hasText()) {
+            if (text.equals("/start")) {
+                accountService.signUp(message);
+                sender.startBot(chatId, bot);
+            } else if (text.equals("Решать задания")) {
+                sender.sendMessage(chatId, "Выберите номер задания, которое хотите порешать.\uD83D\uDC47", ChooseTask.getChooseTaskKeyboard(), bot);
+            } else if (text.equals("Пропустить задание")) {
+                sender.sendTask(chatId, bot);
+            } else if (text.equals("\uD83D\uDD19")) {
+                botStateService.setBotStateCommand(chatId);
+                sender.sendMessage(chatId, "Выберите нужный пункт меню", Keyboards.mainCommands(), bot);
+            } else if (text.equals("Купить подписку")) {
+                botStateService.setBotStateBuying(chatId);
+                sender.sendMessage(chatId, "Купить подписку переведите сотку по номеру 89083006654 и пришлите чек", Keyboards.profileCommands(), bot);
+            }  else if (botState.getState().equals(Enums.State.ANSWER)) {
+                if (text.equals("Узнать ответ")) {
+                    sender.sendAnswer(chatId, bot);
+                } else {
+                    sender.checkTaskAnswer(chatId, text, bot);
+                }
+            } else if (text.equals("Профиль")) {
+                sender.profileMessage(chatId, bot);
             }
-        } else if (text.equals("Профиль")) {
-            sender.profileMessage(chatId, bot);
+            else {
+                sender.sendMessage(chatId, "Неизвестная команда, воспользуйтесь меню)", Keyboards.mainCommands(), bot);
+            }
+        } else if (botStateService.checkBotStateBuying(chatId)) {
+            if (message.hasPhoto() || message.hasDocument()) {
+                sender.sendConfirmMessageToAdmin(message, bot);
+            }
+            botStateService.setBotStateCommand(chatId);
         }
-        else {
-            sender.sendMessage(chatId, "Неизвестная команда, воспользуйтесь меню)", Keyboards.mainCommands(), bot);
-        }
+
     }
 
     public void handleCallbackQuery(CallbackQuery callbackQuery, EgeRusBot bot) {

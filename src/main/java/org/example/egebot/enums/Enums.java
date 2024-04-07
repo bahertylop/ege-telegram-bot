@@ -4,6 +4,7 @@ public class Enums {
 
     public enum State {
         COMMAND,
-        ANSWER
+        ANSWER,
+        BUYING
     }
 }
