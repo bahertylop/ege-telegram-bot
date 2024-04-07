@@ -45,7 +45,7 @@ public class AccountDTO {
 
         String subscribe = "";
         if (subscribed) {
-            subscribe = "Оформлена подписка до: " + endSubscribe;
+            subscribe = "Оформлена подписка до: " + endSubscribe + "\n";
         } else {
             subscribe = "Подписка не оформлена, для покупки подписки нажми \"Купить подписку\"\n" +
             "Бесплатных попыток осталось " + tries + "\n";

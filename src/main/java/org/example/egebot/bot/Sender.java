@@ -11,6 +11,7 @@ import org.example.egebot.services.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -19,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 
 
 @Component
@@ -103,18 +105,11 @@ public class Sender {
         messageToAdmin.setChatId(chatId);
         sendMessage(messageToAdmin, bot);
 
-
-        if (message.hasPhoto()) {
-            SendPhoto photo = new SendPhoto();
-            photo.setPhoto(new InputFile(message.getPhoto().toString()));
-            photo.setChatId(chatId);
-            sendPhoto(photo, bot);
-        } else if (message.hasDocument()) {
-            SendDocument document = new SendDocument();
-            document.setDocument(new InputFile(message.getDocument().toString()));
-            document.setChatId(chatId);
-            sendDocument(document, bot);
-        }
+        ForwardMessage forwardMessage = new ForwardMessage();
+        forwardMessage.setChatId(chatId);
+        forwardMessage.setFromChatId(message.getChatId().toString());
+        forwardMessage.setMessageId(message.getMessageId());
+        forwardMessage(forwardMessage, bot);
     }
 
     public void sendMessage(SendMessage message, EgeRusBot bot) {
@@ -126,21 +121,12 @@ public class Sender {
         }
     }
 
-    public void sendPhoto(SendPhoto photo, EgeRusBot bot) {
+    public void forwardMessage(ForwardMessage message, EgeRusBot bot) {
 
         try {
-            bot.execute(photo);
+            bot.execute(message);
         } catch (TelegramApiException e) {
             LOGGER.error("Ошибка, при отправке фото чека админу: " + e.getMessage());
-        }
-    }
-
-    public void sendDocument(SendDocument document, EgeRusBot bot) {
-
-        try {
-            bot.execute(document);
-        } catch (TelegramApiException e) {
-            LOGGER.error("Ошибка, при отправке документа с чеком админу: " + e.getMessage());
         }
     }
 }
