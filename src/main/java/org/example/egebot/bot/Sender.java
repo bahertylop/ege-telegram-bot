@@ -2,6 +2,7 @@ package org.example.egebot.bot;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import org.example.egebot.constants.MessagesConstants;
 import org.example.egebot.data.AccountDTO;
 import org.example.egebot.data.BotStateDTO;
 import org.example.egebot.data.TaskDTO;
@@ -48,15 +49,12 @@ public class Sender {
             botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
             sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands(), bot);
         } else {
-            sendMessage(chatId, "Для продолжения пользования ботом, купите подписку", Keyboards.profileCommands(), bot);
+            sendMessage(chatId, MessagesConstants.buySub, Keyboards.profileCommands(), bot);
         }
     }
 
     public void startBot(Long chatId, EgeRusBot bot) {
-        String startMessage = "Привет, " +
-                "данный бот создан для нарешивания тестовых заданий егэ по русскому языку, " +
-                "разработчик - @neofnik";
-        sendMessage(chatId, startMessage, Keyboards.mainCommands(), bot);
+        sendMessage(chatId, MessagesConstants.startMessage, Keyboards.mainCommands(), bot);
     }
 
     public void sendAnswer(Long chatId, EgeRusBot bot) {
@@ -73,10 +71,10 @@ public class Sender {
         boolean result = taskService.checkAnswer(answer, stateDTO.getTaskId(), stateDTO.getTaskType());
 
         if (result) {
-            sendMessage(chatId,"Правильно ✅", Keyboards.taskCommands(), bot);
+            sendMessage(chatId,MessagesConstants.rightAnswer, Keyboards.taskCommands(), bot);
             sendTask(chatId, bot);
         } else {
-            sendMessage(chatId, "Неправильно ❌", Keyboards.taskCommands(), bot);
+            sendMessage(chatId, MessagesConstants.wrongAnswer, Keyboards.taskCommands(), bot);
         }
     }
 
