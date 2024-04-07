@@ -12,6 +12,7 @@ import org.example.egebot.services.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -27,70 +28,24 @@ import java.util.Optional;
 @Component
 //@RequiredArgsConstructor
 public class EgeRusBot extends TelegramLongPollingBot {
-
-//    private int taskNumber = 1;
-
-    private final TaskService taskService;
-    private final AccountService accountService;
-
-    private final BotStateService botStateService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EgeRusBot.class);
+    private final UpdateHandler updateHandler;
 
     @Value("${bot.name}")
     private String botName;
 
-
-
-    public EgeRusBot(@Value("${bot.token}") String botToken, TaskService taskService, AccountService accountService, BotStateService botStateService) {
+    public EgeRusBot(@Value("${bot.token}") String botToken, UpdateHandler updateHandler) {
         super(botToken);
-        this.taskService = taskService;
-        this.accountService = accountService;
-        this.botStateService = botStateService;
+        this.updateHandler = updateHandler;
     }
 
     // поступление команд обработка
     @Override
     public void onUpdateReceived(Update update) {
         if (update.getMessage() != null) {
-            Long chatId = update.getMessage().getChatId();
-            System.out.println(chatId);
-            String text = update.getMessage().getText();
-            BotStateDTO botState = botStateService.getBotState(chatId);
-
-            if (text.equals("/start")) {
-                accountService.signUp(update.getMessage());
-                startBot(chatId);
-            } else if (text.equals("Решать задания")) {
-                sendMessage(chatId, "Выберите номер задания, которое хотите порешать.\uD83D\uDC47", ChooseTask.getChooseTaskKeyboard());
-            } else if (text.equals("Пропустить задание")) {
-                sendTask(chatId);
-            } else if (text.equals("\uD83D\uDD19")) {
-                botStateService.setBotStateCommand(chatId);
-                sendMessage(chatId, "Выберите нужный пункт меню", Keyboards.mainCommands());
-            } else if (text.equals("Купить подписку")) {
-                sendMessage(chatId, "Купить подписку переведите сотку по номеру 89083006654 и пришлите чек", Keyboards.profileCommands());
-            } else if (botState.getState().equals(Enums.State.ANSWER)) {
-                if (text.equals("Узнать ответ")) {
-                    sendAnswer(chatId);
-                } else {
-                    checkTaskAnswer(chatId, text);
-                }
-            } else if (text.equals("Профиль")) {
-                profileMessage(chatId);
-            }
-            else {
-                sendMessage(chatId, "Неизвестная команда, воспользуйтесь меню)", Keyboards.mainCommands());
-            }
+            updateHandler.handleMessage(update.getMessage(), this);
         } else if (update.hasCallbackQuery()) {
-            Long chatId = update.getCallbackQuery().getFrom().getId();
-            System.out.println(chatId);
-            String data = update.getCallbackQuery().getData();
-            System.out.println(data);
-            chooseTaskNumber(chatId, data);
+            updateHandler.handleCallbackQuery(update.getCallbackQuery(), this);
         }
-
-
     }
 
     @Override
@@ -106,70 +61,5 @@ public class EgeRusBot extends TelegramLongPollingBot {
     @Override
     public void onRegister() {
         super.onRegister();
-    }
-
-    private void startBot(Long chatId) {
-        String startMessage = "Привет, " +
-                "данный бот создан для нарешивания тестовых заданий егэ по русскому языку, " +
-                "разработчик - @neofnik";
-        sendMessage(chatId, startMessage, Keyboards.mainCommands());
-    }
-
-    private void sendMessage(Long chatId, String messageText, ReplyKeyboard keyboard) {
-        SendMessage message = Sender.sendMessage(chatId, messageText);
-//        message.setReplyMarkup(Keyboards.mainCommands());
-        message.setReplyMarkup(keyboard);
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            LOGGER.error("Ошибка, при отправке сообщения: " + e.getMessage());
-        }
-    }
-
-    private void chooseTaskNumber(Long chatId, String text) {
-        int taskType = Integer.parseInt(text);
-        botStateService.setTaskType(taskType, chatId);
-        sendMessage(chatId, "Номер задачи выбран, " + text + ":", Keyboards.mainCommands());
-        sendTask(chatId);
-    }
-
-    private void sendTask(Long chatId) {
-        if (accountService.canSendTask(chatId)) {
-            Integer taskType = botStateService.getTaskType(chatId);
-            TaskDTO taskDTO = taskService.getRandomTask(taskType);
-            botStateService.setBotStateAnswer(chatId, taskDTO.getTaskType(), taskDTO.getId());
-            sendMessage(chatId, taskDTO.toString(), Keyboards.taskCommands());
-        } else {
-            sendMessage(chatId, "Для продолжения пользования ботом, купите подписку", Keyboards.profileCommands());
-        }
-    }
-
-    private void checkTaskAnswer(Long chatId, String answer) {
-        BotStateDTO stateDTO = botStateService.getBotState(chatId);
-
-        boolean result = taskService.checkAnswer(answer, stateDTO.getTaskId(), stateDTO.getTaskType());
-
-        if (result) {
-            sendMessage(chatId,"Правильно ✅", Keyboards.taskCommands());
-            sendTask(chatId);
-        } else {
-            sendMessage(chatId, "Неправильно ❌", Keyboards.taskCommands());
-        }
-    }
-
-    private void sendAnswer(Long chatId) {
-        BotStateDTO stateDTO = botStateService.getBotState(chatId);
-
-        TaskDTO taskDTO = taskService.getTaskByIdAndType(stateDTO.getTaskId(), stateDTO.getTaskType());
-        sendMessage(chatId, taskDTO.showAnswer(), Keyboards.taskCommands());
-        sendTask(chatId);
-    }
-
-    private void profileMessage(Long chatId) {
-        AccountDTO accountDTO = accountService.getAccount(chatId);
-
-        if (accountDTO != null) {
-            sendMessage(chatId, accountDTO.toString(), Keyboards.profileCommands());
-        }
     }
 }

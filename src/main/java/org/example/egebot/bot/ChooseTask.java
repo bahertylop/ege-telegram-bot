@@ -1,13 +1,29 @@
 package org.example.egebot.bot;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import lombok.RequiredArgsConstructor;
+import org.example.egebot.services.BotStateService;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class ChooseTask {
+
+    private final BotStateService botStateService;
+
+    private final Sender sender;
+
+    public void chooseTaskNumber(Long chatId, String text, EgeRusBot bot) {
+        int taskType = Integer.parseInt(text);
+        botStateService.setTaskType(taskType, chatId);
+        sender.sendMessage(chatId, "Номер задачи выбран, " + text + ":", Keyboards.mainCommands(), bot);
+        sender.sendTask(chatId, bot);
+    }
 
     public static InlineKeyboardMarkup getChooseTaskKeyboard() {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
