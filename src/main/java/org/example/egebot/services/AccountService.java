@@ -11,4 +11,6 @@ public interface AccountService {
     AccountDTO getAccount(Long chatId);
 
     boolean canSendTask(Long chatId);
+
+    boolean isSubscribed(Long chatId);
 }

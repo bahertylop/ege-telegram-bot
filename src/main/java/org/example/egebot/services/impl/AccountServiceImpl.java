@@ -81,4 +81,22 @@ public class AccountServiceImpl implements AccountService {
         }
         return false;
     }
+
+    @Override
+    public boolean isSubscribed(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        if (account.isPresent()) {
+            Account accountReal = account.get();
+
+            if (accountReal.isSubscribed()) {
+                LocalDate now = LocalDate.now();
+                LocalDate end = accountReal.getEndSubscribe();
+                if (end != null) {
+                    return now.isBefore(end);
+                }
+            }
+        }
+        return false;
+    }
 }

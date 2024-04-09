@@ -39,7 +39,7 @@ public class UpdateHandler {
                 botStateService.setBotStateCommand(chatId);
                 sender.sendMessage(chatId, MessagesConstants.chooseMenuButton, Keyboards.mainCommands(), bot);
             } else if (text.equals("Купить подписку")) {
-                if (accountService.canSendTask(chatId)) {
+                if (accountService.isSubscribed(chatId)) {
                     sender.sendMessage(chatId, MessagesConstants.youSubscribed, Keyboards.mainCommands(), bot);
                 } else {
                     botStateService.setBotStateBuying(chatId);
