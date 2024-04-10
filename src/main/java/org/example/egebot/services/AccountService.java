@@ -13,4 +13,10 @@ public interface AccountService {
     boolean canSendTask(Long chatId);
 
     boolean isSubscribed(Long chatId);
+
+    void plusRightAnswers(Long chatId);
+
+    void plusBadAnswers(Long chatId);
+
+    void plusSkippedTasks(Long chatId);
 }

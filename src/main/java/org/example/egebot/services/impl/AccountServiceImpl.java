@@ -99,4 +99,43 @@ public class AccountServiceImpl implements AccountService {
         }
         return false;
     }
+
+    @Override
+    public void plusRightAnswers(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        if (account.isPresent()) {
+            Account accountReal = account.get();
+            if (accountReal.getRightAnswers() != null) {
+                accountReal.setRightAnswers(accountReal.getRightAnswers() + 1);
+                accountRepository.save(accountReal);
+            }
+        }
+    }
+
+    @Override
+    public void plusBadAnswers(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        if (account.isPresent()) {
+            Account accountReal = account.get();
+            if (accountReal.getBadAnswers() != null) {
+                accountReal.setBadAnswers(accountReal.getBadAnswers() + 1);
+                accountRepository.save(accountReal);
+            }
+        }
+    }
+
+    @Override
+    public void plusSkippedTasks(Long chatId) {
+        Optional<Account> account = accountRepository.getAccountByChatId(chatId);
+
+        if (account.isPresent()) {
+            Account accountReal = account.get();
+            if (accountReal.getSkippedTasks() != null) {
+                accountReal.setSkippedTasks(accountReal.getSkippedTasks() + 1);
+                accountRepository.save(accountReal);
+            }
+        }
+    }
 }

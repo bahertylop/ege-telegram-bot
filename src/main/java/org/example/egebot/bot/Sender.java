@@ -72,8 +72,10 @@ public class Sender {
 
         if (result) {
             sendMessage(chatId,MessagesConstants.rightAnswer, Keyboards.taskCommands(), bot);
+            accountService.plusRightAnswers(chatId);
             sendTask(chatId, bot);
         } else {
+            accountService.plusBadAnswers(chatId);
             sendMessage(chatId, MessagesConstants.wrongAnswer, Keyboards.taskCommands(), bot);
         }
     }
@@ -90,10 +92,6 @@ public class Sender {
             sendMessage(chatId, accountDTO.toString(), Keyboards.profileCommands(), bot);
         }
     }
-
-//    boolean checkBotStateBuying(Long chatId) {
-//        return botStateService.checkBotStateBuying(chatId);
-//    }
 
     public void sendConfirmMessageToAdmin(Message message, EgeRusBot bot) {
         String chatId = String.valueOf(6380769033L);

@@ -34,8 +34,9 @@ public class UpdateHandler {
             } else if (text.equals("Решать задания")) {
                 sender.sendMessage(chatId, MessagesConstants.chooseTask, ChooseTask.getChooseTaskKeyboard(), bot);
             } else if (text.equals("Пропустить задание")) {
+                accountService.plusSkippedTasks(chatId);
                 sender.sendTask(chatId, bot);
-            } else if (text.equals("\uD83D\uDD19")) {
+            } else if (text.equals("⬅\uFE0F")) {
                 botStateService.setBotStateCommand(chatId);
                 sender.sendMessage(chatId, MessagesConstants.chooseMenuButton, Keyboards.mainCommands(), bot);
             } else if (text.equals("Купить подписку")) {
@@ -45,7 +46,6 @@ public class UpdateHandler {
                     botStateService.setBotStateBuying(chatId);
                     sender.sendMessage(chatId, MessagesConstants.subscribeButton, Keyboards.profileCommands(), bot);
                 }
-
             }  else if (botState.getState().equals(Enums.State.ANSWER)) {
                 if (text.equals("Узнать ответ")) {
                     sender.sendAnswer(chatId, bot);

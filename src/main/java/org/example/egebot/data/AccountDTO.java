@@ -23,6 +23,9 @@ public class AccountDTO {
     private Integer tries;
     private Boolean subscribed;
     private LocalDate endSubscribe;
+    private Integer rightAnswers;
+    private Integer badAnswers;
+    private Integer skippedTasks;
 
     public static AccountDTO from(Account account) {
         return AccountDTO.builder()
@@ -32,6 +35,9 @@ public class AccountDTO {
                 .firstStartDate(account.getStartDate())
                 .endSubscribe(account.getEndSubscribe())
                 .tries(account.getTries())
+                .rightAnswers(account.getRightAnswers())
+                .badAnswers(account.getBadAnswers())
+                .skippedTasks(account.getSkippedTasks())
                 .build();
     }
 
@@ -51,8 +57,12 @@ public class AccountDTO {
             "Бесплатных попыток осталось " + tries + "\n";
         }
 
-        String start = "Впервые активировали бота: " + firstStartDate + " \uD83E\uDD1D";
+        String start = "Впервые активировали бота: " + firstStartDate + " \uD83E\uDD1D\n";
 
-        return id + userName + subscribe + start;
+        String rightAnswers = "✅ Правильных ответов: " + getRightAnswers() + "\n";
+        String badAnswers = "❌ Неправильных ответов: " + getBadAnswers() + "\n";
+        String skipped = "Пропущено заданий: " + getSkippedTasks();
+
+        return id + userName + subscribe + start + rightAnswers + badAnswers + skipped;
     }
 }

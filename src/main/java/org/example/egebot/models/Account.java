@@ -2,11 +2,13 @@ package org.example.egebot.models;
 
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.ws.rs.DefaultValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.internal.engine.messageinterpolation.util.InterpolationHelper;
 
 import java.time.LocalDate;
 
@@ -36,4 +38,13 @@ public class Account {
 
     @Column(name = "end_subscribe")
     private LocalDate endSubscribe;
+
+    @Column(name = "right_answers", columnDefinition = "integer default 0")
+    private Integer rightAnswers;
+
+    @Column(name = "bad_answers", columnDefinition = "integer default 0")
+    private Integer badAnswers;
+
+    @Column(name = "skipped_tasks", columnDefinition = "integer default 0")
+    private Integer skippedTasks;
 }

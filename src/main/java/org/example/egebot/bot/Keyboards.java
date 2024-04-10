@@ -38,7 +38,7 @@ public class Keyboards {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
 
         KeyboardRow row1 = new KeyboardRow();
-        row1.add("\uD83D\uDD19");
+        row1.add("⬅\uFE0F");
         row1.add("Пропустить задание");
 
         KeyboardRow row2 = new KeyboardRow();
@@ -60,7 +60,7 @@ public class Keyboards {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add("\uD83D\uDD19");
+        row.add("⬅\uFE0F");
         row.add("Купить подписку");
 
         keyboardRows.add(row);
