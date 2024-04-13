@@ -34,8 +34,11 @@ public class AccountServiceImpl implements AccountService {
                     .userName(userName)
                     .chatId(chatId)
                     .startDate(LocalDate.now())
-                    .tries(10)
+                    .tries(15)
                     .subscribed(false)
+                    .rightAnswers(0)
+                    .badAnswers(0)
+                    .skippedTasks(0)
                     .build();
 
             try {

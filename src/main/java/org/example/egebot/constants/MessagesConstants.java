@@ -6,7 +6,7 @@ public class MessagesConstants {
 
     public static final String startMessage = "Привет, " +
             "данный бот создан для нарешивания тестовых заданий егэ по русскому языку, " +
-            "разработчик - @neofnik";
+            "разработчик - @bahertylop";
 
     public static final String rightAnswer = "Правильно ✅";
     public static final String wrongAnswer = "Неправильно ❌";
@@ -28,6 +28,6 @@ public class MessagesConstants {
             "На квитанции должны быть четко видны: дата, время и сумма платежа.";
     public static final String unknownCommand = "Неизвестная команда, воспользуйтесь меню)";
 
-    public static final String afterBuying = "Ваша оплата отправлена на модерацию, после проверки вам будет предоставлен полный функционал бота. Проверка может занять до нескольких часов. Если у вас есть вопросы пишите @neofnik";
+    public static final String afterBuying = "Ваша оплата отправлена на модерацию, после проверки вам будет предоставлен полный функционал бота. Проверка может занять до нескольких часов. Если у вас есть вопросы пишите @bahertylop";
 }
 
